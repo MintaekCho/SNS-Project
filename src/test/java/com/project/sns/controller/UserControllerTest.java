@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.sns.controller.model.User;
 import com.project.sns.controller.request.UserJoinRequest;
 import com.project.sns.controller.request.UserLoginRequest;
+import com.project.sns.exception.ErrorCode;
 import com.project.sns.exception.SnsApplicationException;
 import com.project.sns.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -87,7 +88,7 @@ public class UserControllerTest {
         String password = "password";
 
         //TODO : Mocking
-        when(userService.login(userName, password)).thenThrow(new SnsApplicationException());
+        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
 
         mockMvc.perform(post("/api/v1/users/login")
                         .contentType(MediaType.APPLICATION_JSON)

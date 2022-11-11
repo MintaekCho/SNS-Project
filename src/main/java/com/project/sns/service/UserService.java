@@ -2,6 +2,7 @@ package com.project.sns.service;
 
 import com.project.sns.controller.model.User;
 import com.project.sns.controller.model.entity.UserEntity;
+import com.project.sns.exception.ErrorCode;
 import com.project.sns.exception.SnsApplicationException;
 import com.project.sns.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,13 @@ public class UserService {
     //TODO : implement
     public User join(String username, String password) {
         //회원가입하려는 userName으로 회원가입된 user가 있는
-        Optional<UserEntity> userEntity = userEntityRepository.findByUserName(username);
+         userEntityRepository.findByUserName(username).ifPresent(it -> {
+             throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, String.format("%s is duplicated", username));
+         });
 
         // 회원가입 진행 = user등록
-        userEntityRepository.save(new UserEntity());
-        return new User();
+        UserEntity saveUser = userEntityRepository.save(new UserEntity());
+        return User.fromEntity(saveUser);
 
     }
 
